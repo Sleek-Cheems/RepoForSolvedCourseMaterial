@@ -1,0 +1,43 @@
+url2 = 'https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html'
+html_data2 = requests.get(url2).text
+#%% md
+Parse the html data using `beautiful_soup` using parser i.e `html5lib` or `html.parser`.
+
+#%%
+soup = BeautifulSoup(html_data2, 'html5lib')
+#%% md
+Using `BeautifulSoup` or the `read_html` function extract the table with `GameStop Quarterly Revenue` and store it into a dataframe named `gme_revenue`. The dataframe should have columns `Date` and `Revenue`. Make sure the comma and dollar sign is removed from the `Revenue` column.
+
+#%% md
+> **Note: Use the method similar to what you did in question 2.**  
+
+#%% md
+<details><summary>Click here if you need help locating the table</summary>
+
+```
+    
+Below is the code to isolate the table, you will now need to loop through the rows and columns like in the previous lab
+    
+soup.find_all("tbody")[1]
+    
+If you want to use the read_html function the table is located at index 1
+
+
+```
+
+</details>
+
+#%%
+tables = pd.read_html(url2)
+gme_revenue = tables[1]
+print(gme_revenue.columns)
+gme_revenue = gme_revenue.rename(columns={'GameStop Quarterly Revenue (Millions of US $)':'Date','GameStop Quarterly Revenue (Millions of US $).1':'Revenue'})
+
+gme_revenue["Revenue"] = gme_revenue["Revenue"].str.replace(r'[\$,]', "", regex=True)
+
+gme_revenue
+#%% md
+Display the last five rows of the `gme_revenue` dataframe using the `tail` function. Take a screenshot of the results.
+
+#%%
+gme_revenue.tail()
